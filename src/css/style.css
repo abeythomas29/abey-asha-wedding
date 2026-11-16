@@ -1,0 +1,335 @@
+:root {
+  color-scheme: light;
+  --paper: #f7f2e4;
+  --paper-light: #fbf8ef;
+  --ink: #26392d;
+  --accent: #1f4632;
+  --metal: #ab8a4f;
+  --script: 'Parisienne', cursive;
+  --signature: 'Imperial Script', 'Parisienne', cursive;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sway-time: 9s;
+  /* Fine paper fibre, generated so no texture file is needed. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .5 0 0 0 0 .4 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 20px/1.65 var(--serif); }
+body.locked { overflow: hidden; }
+button { font: inherit; cursor: pointer; }
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+[hidden] { display: none !important; }
+p { text-wrap: pretty; }
+
+.invitation { max-width: 560px; margin: auto; background: var(--paper); overflow: hidden; box-shadow: 0 0 90px #00000014; }
+@media (min-width: 800px) {
+  body { background: color-mix(in srgb, var(--accent) 12%, var(--paper)); }
+  .invitation { margin: 25px auto; }
+}
+
+/* ---------- Illustrated scene (hero and closing) ---------- */
+[data-scene] { --p: 0; isolation: isolate; }
+.scene-art { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+.scene-art > * { position: absolute; }
+.sky {
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 34% at 50% 50%, #fffbec 0%, #fbf1d6 35%, #0000 72%),
+    linear-gradient(180deg, #efe7d0 0%, #f6efdc 38%, #f3eedf 62%, #e9ebdd 100%);
+}
+.sky::after { content: ''; position: absolute; inset: 0; background-image: var(--grain); opacity: .5; mix-blend-mode: multiply; }
+/* A low morning sun that breathes slowly behind the names. */
+.sun {
+  left: 50%; top: 47%; width: 62%; aspect-ratio: 1; translate: -50% calc(-50% + var(--p) * 8px); border-radius: 50%;
+  background: radial-gradient(circle, #fffef8 0%, #fff6dc 14%, #fbe9bd66 34%, #0000 66%);
+  animation: sun-breathe 7s ease-in-out infinite alternate; animation-play-state: paused;
+}
+/* Distant water: a pale band with a shimmering path of sunlight. */
+.lake {
+  left: -5%; right: -5%; top: 53%; height: 16%;
+  background:
+    radial-gradient(ellipse 9% 90% at 50% 18%, #fffcefcc, #0000 80%),
+    linear-gradient(180deg, #0000 0%, #e3e6d999 22%, #e9ebdfaa 45%, #0000 100%);
+  translate: 0 calc(var(--p) * 12px);
+}
+.lake::after {
+  content: ''; position: absolute; inset: 0 30%;
+  background: repeating-linear-gradient(180deg, #fffdf500 0 5px, #fffdf5cc 6px, #fffdf500 8px);
+  -webkit-mask-image: radial-gradient(ellipse 50% 90% at 50% 0%, #000, #0000 80%);
+  mask-image: radial-gradient(ellipse 50% 90% at 50% 0%, #000, #0000 80%);
+  animation: shimmer 3.2s ease-in-out infinite alternate; animation-play-state: paused;
+}
+.in-view .sun, .in-view .lake::after { animation-play-state: running; }
+.hills {
+  left: -10%; right: -10%; top: 46%; height: 22%;
+  background:
+    radial-gradient(ellipse 40% 60% at 22% 100%, #b9c6ad66, #0000 70%),
+    radial-gradient(ellipse 45% 55% at 78% 100%, #a9b99c55, #0000 70%),
+    radial-gradient(ellipse 70% 40% at 50% 100%, #cfd6c255, #0000 70%);
+  translate: 0 calc(var(--p) * 10px);
+}
+.arch {
+  left: 11%; right: 11%; top: 4%; height: 72%;
+  border: 1.5px solid #c8ad7a99; border-bottom: 0; border-radius: 50% 50% 0 0 / 26% 26% 0 0;
+  box-shadow: inset 0 0 0 7px #f7f2e455, inset 0 0 0 8px #c8ad7a55;
+  translate: 0 calc(var(--p) * 14px);
+}
+.curtain {
+  top: -2%; height: 82%; width: 38%;
+  background:
+    repeating-linear-gradient(90deg, #ffffff00 0 14px, #ffffff66 18px, #ffffff00 26px),
+    linear-gradient(90deg, #fffdf6e6, #fbf4e2aa 55%, #fffdf600);
+  clip-path: polygon(0 0, 100% 0, 82% 16%, 58% 36%, 34% 54%, 26% 60%, 36% 76%, 44% 100%, 0 100%);
+  transform-origin: 0 0;
+  animation: curtain-sway var(--sway-time) ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+.curtain-left { left: 0; }
+.curtain-right { right: 0; scale: -1 1; transform-origin: 0 0; animation-delay: -4s; }
+.couple {
+  left: 50%; bottom: 0; width: 96%; translate: -50% 0;
+  -webkit-mask-image: linear-gradient(transparent 0%, #000 22%);
+  mask-image: linear-gradient(transparent 0%, #000 22%);
+}
+/* Bouquets are fixed in place; only the blossoms move. */
+.corner { width: 56%; pointer-events: none; }
+.corner > img:first-child { width: 100%; }
+.corner-tl { left: -6%; top: -3%; }
+.corner-tr { right: -6%; top: -3%; scale: -1 1; }
+.corner-br { right: -10%; bottom: -4%; width: 48%; }
+.corner-bl { left: -10%; bottom: -4%; width: 44%; scale: -1 1; }
+.blossom {
+  position: absolute; transform-origin: 50% 50%;
+  animation: stir var(--stir, 6s) ease-in-out var(--stir-delay, 0s) infinite alternate; animation-play-state: paused;
+}
+.in-view .blossom { animation-play-state: running; }
+.petals { inset: 0; width: 100%; height: 100%; }
+.in-view .curtain { animation-play-state: running; }
+
+/* ---------- Hero ---------- */
+.hero { position: relative; height: min(1060px, 205vw); min-height: 760px; overflow: hidden; }
+.hero::after { content: ''; position: absolute; inset: auto 0 0; height: 90px; background: linear-gradient(#0000, var(--paper)); z-index: 1; pointer-events: none; }
+.hero-copy { position: absolute; top: 11%; left: 12%; right: 12%; text-align: center; z-index: 2; }
+.occasion { font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; margin: 0 0 6px; }
+.date { font-size: 19px; letter-spacing: .16em; margin: 0 0 18px; }
+.names { font: 400 clamp(76px, 19vw, 110px)/1.02 var(--signature); color: var(--accent); margin: 0; overflow-wrap: anywhere; }
+.names span { display: block; padding: 0 .08em .07em; }
+.names i { display: block; font: italic 25px/1.1 var(--serif); margin: -3px 0 1px; }
+.names:focus { outline: none; }
+.hero-note { margin: 18px auto 0; max-width: 240px; font-size: 16px; font-weight: 500; line-height: 1.5; text-shadow: 0 1px 8px var(--paper), 0 0 16px var(--paper); }
+.hero-link {
+  display: inline-block; margin-top: 14px; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 4px; text-shadow: 0 1px 8px var(--paper);
+}
+
+/* Hero copy and art arrive in sequence once the envelope parts. */
+body.locked .hero-copy > * { opacity: 0; transform: translateY(14px); }
+.hero-copy > * { transition: opacity 1s ease, transform 1s ease; }
+body.scene-arriving .hero-copy > *, body:not(.locked) .hero-copy > * { opacity: 1; transform: none; }
+.hero-copy > :nth-child(2) { transition-delay: .15s; }
+.hero-copy > :nth-child(3) { transition-delay: .35s; }
+.hero-copy > :nth-child(4) { transition-delay: .6s; }
+.hero-copy > :nth-child(5) { transition-delay: .75s; }
+
+/* ---------- Paper sections ---------- */
+.paper { position: relative; padding: 85px 42px; text-align: center; background: var(--grain), var(--paper); }
+.torn { background: var(--grain), var(--paper-light); }
+.floral { overflow: hidden; }
+.floral::before, .floral::after { content: ''; position: absolute; z-index: -1; pointer-events: none; background: center/contain no-repeat; }
+.floral::before { left: -12%; top: -2%; width: 62%; aspect-ratio: 482 / 432; background-image: url("../assets/bouquet-tl.webp"); opacity: .9; }
+.floral::after { right: -12%; bottom: -3%; width: 54%; aspect-ratio: 490 / 520; background-image: url("../assets/bouquet-br.webp"); opacity: .9; }
+.floral > * { position: relative; }
+.script { font: 400 clamp(36px, 9vw, 46px)/1.28 var(--script); color: var(--accent); margin: 0 0 26px; text-wrap: balance; }
+.kicker { display: block; font-size: 11px; font-weight: 600; letter-spacing: .24em; text-transform: uppercase; color: var(--metal); margin: 0 0 6px; }
+.rule { width: 64px; height: 1px; background: var(--metal); margin: 26px auto; position: relative; }
+.rule::after { content: ''; position: absolute; width: 5px; height: 5px; background: var(--metal); left: 29px; top: -2px; transform: rotate(45deg); }
+
+.intro { padding: 120px 40px 150px; }
+.cross { display: block; width: 30px; margin: 0 auto 22px; fill: var(--accent); }
+.verse { margin: 0 auto; max-width: 330px; font-style: italic; font-size: 20px; line-height: 1.55; }
+.verse cite { display: block; font-style: normal; font-size: 15px; letter-spacing: .12em; margin-top: 10px; color: var(--metal); }
+.lead { max-width: 330px; margin: 0 auto 24px; font-size: 19px; }
+.person .script { margin: 0; font-size: clamp(38px, 10vw, 50px); }
+.parents { font-style: italic; font-size: 16px; margin: 2px 0 0; }
+.with { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 22px 0; }
+.with span { width: 64px; height: 1px; background: var(--metal); }
+.with em { font: 400 34px/1 var(--script); color: var(--accent); }
+.lead.solemn { margin: 30px auto 2px; }
+.long-date { font-size: 24px; letter-spacing: .04em; margin: 0; color: var(--accent); }
+
+/* ---------- Our story ---------- */
+.story { padding: 10px 42px 105px; }
+.story > .script { margin-bottom: 18px; }
+.story > .lead { max-width: 350px; margin-bottom: 46px; }
+/* A photograph mounted in a gold-edged arch, like the venue cards. */
+.arch-photo {
+  aspect-ratio: 4 / 5; padding: 5px; border: 1px solid var(--metal); border-radius: 999px 999px 5px 5px;
+  background: var(--paper-light); box-shadow: 0 18px 30px -22px #26392d80;
+}
+.arch-photo span { display: block; height: 100%; overflow: hidden; border-radius: 999px 999px 2px 2px; }
+.arch-photo img {
+  width: 100%; height: 100%; object-fit: cover; object-position: var(--focus, 50% 30%);
+  /* A touch of warmth so every photo sits on the same paper; it drifts a little inside its arch on scroll. */
+  filter: saturate(.93) sepia(.08);
+  transform-origin: var(--focus, 50% 30%); transform: translateY(calc(var(--p) * -1.6%)) scale(1.07);
+}
+.moments { list-style: none; margin: 0; padding: 0; }
+.moment figure { display: grid; grid-template-columns: 56% 1fr; align-items: center; gap: 18px; margin: 0; text-align: left; }
+.moment:nth-child(even) figure { grid-template-columns: 1fr 56%; text-align: right; }
+.moment:nth-child(even) .arch-photo { order: 2; }
+.moment figcaption > * { display: block; }
+.moment figcaption strong { font: 400 clamp(23px, 6.4vw, 31px)/1.2 var(--script); color: var(--accent); margin: 2px 0 8px; }
+.moment figcaption span:last-child { font-size: 16px; font-style: italic; line-height: 1.45; }
+/* The thread that carries the story from one photo to the next. */
+.thread { display: block; width: 100%; height: 62px; margin: 10px 0; overflow: visible; }
+.thread path { fill: none; stroke: var(--metal); stroke-width: 2; stroke-linecap: round; stroke-dasharray: .1 7; vector-effect: non-scaling-stroke; opacity: .85; }
+.moment:nth-child(even) .thread { scale: -1 1; }
+.story-finale { margin: 0; }
+.story-finale .arch-photo { outline: 1px solid color-mix(in srgb, var(--metal) 45%, transparent); outline-offset: 7px; margin: 8px 8px 0; }
+.story-finale figcaption { margin-top: 44px; }
+.story-finale .script { margin: 4px 0 12px; }
+.story-finale p { max-width: 340px; margin: 0 auto; font-size: 19px; }
+
+/* Torn paper edges */
+.torn { background: var(--paper-light); }
+.torn::before, .torn::after {
+  content: ''; position: absolute; left: 0; width: 100%; height: 18px; background: var(--paper-light); z-index: 2;
+  clip-path: polygon(0 45%, 3% 32%, 7% 58%, 11% 38%, 15% 66%, 19% 40%, 24% 62%, 28% 34%, 33% 57%, 37% 31%, 42% 55%, 46% 36%, 51% 63%, 55% 30%, 60% 54%, 64% 37%, 69% 62%, 73% 33%, 78% 56%, 83% 35%, 88% 61%, 92% 36%, 96% 57%, 100% 42%, 100% 100%, 0 100%);
+}
+.torn::before { top: -17px; }
+.torn::after { bottom: -17px; transform: rotate(180deg); }
+
+.countdown-section { padding: 65px 24px 70px; }
+.countdown-section .script { font-size: 39px; }
+.countdown { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 390px; margin: auto; }
+.countdown strong { display: block; font-weight: 400; font-size: 39px; line-height: 1.25; font-variant-numeric: tabular-nums; color: var(--accent); }
+.countdown span { font-size: 13px; letter-spacing: .04em; }
+.countdown-note { font-size: 16px; margin: 21px 0 0; opacity: .8; }
+
+/* Timeline */
+.schedule { padding: 110px 40px 120px; }
+.timeline { list-style: none; padding: 15px 0 0; margin: 0 auto; max-width: 360px; position: relative; }
+.timeline::before { content: ''; position: absolute; left: 43%; top: 30px; bottom: 34px; width: 1px; background: color-mix(in srgb, var(--accent) 30%, transparent); }
+.timeline li { display: grid; grid-template-columns: 34% 18% 48%; align-items: center; min-height: 110px; text-align: left; }
+.timeline time { font-size: 23px; text-align: right; white-space: nowrap; }
+.marker { display: grid; place-items: center; position: relative; z-index: 1; }
+.bloom { width: 36px; transform: rotate(-12deg); transition: transform .6s ease; }
+.bloom ellipse { fill: #fffdf5; stroke: var(--metal); stroke-width: .9; }
+.bloom circle { fill: var(--metal); }
+.timeline li.is-current .bloom { transform: rotate(14deg) scale(1.3); animation: breathe 4.8s ease-in-out infinite; }
+.event-name { font-size: 20px; line-height: 1.35; padding-left: 8px; color: var(--accent); }
+.event-name small { display: block; font-size: 15px; font-style: italic; color: var(--ink); }
+.schedule-note { font-size: 17px; margin: 30px auto 0; }
+
+/* Venues */
+.venue-section { padding: 75px 30px 70px; overflow: hidden; }
+.venue-scene { overflow: hidden; border-radius: 48% 48% 0 0 / 40% 40% 0 0; margin: 0 0 30px; height: 300px; }
+.venue-scene img { width: 100%; height: 118%; object-fit: cover; object-position: 50% 15%; translate: 0 calc(var(--p) * -20px - 8%); }
+.venue-caption { font-size: 13px; font-style: italic; margin: -18px 0 30px; opacity: .75; }
+.location-frame {
+  position: relative; border: 1px solid var(--metal); outline: 1px solid color-mix(in srgb, var(--metal) 45%, transparent);
+  outline-offset: 6px; margin: 18px 10px 0; padding: 44px 26px 36px; border-radius: 100px 100px 3px 3px; background: var(--paper-light);
+}
+.location-frame + .location-frame { margin-top: 44px; }
+.venue-name { font-size: 30px; line-height: 1.25; font-weight: 400; margin: 0 10px; color: var(--accent); }
+.venue-address { font-style: normal; font-size: 19px; max-width: 290px; margin: 0 auto 14px; }
+.venue-time { margin: 0; font-size: 18px; }
+.actions { display: grid; gap: 12px; margin: 26px auto 0; max-width: 260px; }
+.action {
+  display: block; border: 1px solid var(--accent); padding: 13px 20px; background: var(--accent); color: #fff; text-decoration: none;
+  letter-spacing: .09em; text-transform: uppercase; font-size: 13px; font-weight: 600; border-radius: 30px; line-height: 1.5; text-align: center;
+  transition: transform .2s, filter .2s;
+}
+.action:hover { filter: brightness(1.12); transform: translateY(-2px); }
+.action:active { transform: scale(.98); }
+.action.secondary { color: var(--accent); background: transparent; }
+
+/* RSVP */
+.rsvp-section { padding: 90px 36px 100px; }
+.rsvp-card {
+  border: 1px solid var(--metal); outline: 1px solid color-mix(in srgb, var(--metal) 35%, transparent); outline-offset: 6px;
+  padding: 46px 26px 40px; background: color-mix(in srgb, var(--paper) 90%, white); border-radius: 90px 90px 4px 4px;
+}
+.rsvp-envelope { display: block; width: 42px; height: 32px; margin: 18px auto; color: var(--accent); }
+.rsvp-card .script { font-size: 42px; margin-bottom: 18px; }
+.rsvp-card > p { font-size: 19px; margin: 0 auto; max-width: 310px; }
+.rsvp-form { margin-top: 26px; text-align: left; }
+.rsvp-form label { display: block; font-size: 17px; margin: 18px 0 8px; }
+.rsvp-form input, .rsvp-form select {
+  width: 100%; min-height: 48px; border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); border-radius: 4px;
+  background: color-mix(in srgb, var(--paper) 70%, white); color: var(--ink); font: 18px/1.5 var(--serif); padding: 10px 12px;
+}
+.rsvp-form .btn {
+  width: 100%; margin-top: 26px; border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 30px;
+  padding: 13px 20px; font-size: 13px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase;
+}
+.rsvp-help { font-size: 14px; font-style: italic; text-align: center; margin: 14px auto 0; max-width: 260px; }
+.rsvp-help:empty { display: none; }
+.rsvp-trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.rsvp-thanks { font: 400 28px/1.35 var(--script); color: var(--accent); text-align: center; margin: 10px 0 0; }
+
+/* Closing */
+.closing { background: var(--paper); text-align: center; }
+.closing-scene { position: relative; min-height: 850px; padding: 95px 40px 235px; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
+.closing-scene::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 75%, transparent) 12%, color-mix(in srgb, var(--paper) 30%, transparent) 32%, transparent 62%, var(--paper) 100%);
+}
+.closing-copy { max-width: 350px; }
+.closing-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; margin: 0 0 24px; }
+.closing-title { font: 400 clamp(48px, 12vw, 66px)/1.04 var(--serif); letter-spacing: -.03em; margin: 0; color: var(--ink); }
+.closing-title em { display: inline-block; font: 400 1.12em/1.3 var(--script); letter-spacing: 0; color: var(--accent); padding: 0 .12em .08em; }
+.closing-rule { width: 45px; height: 1px; background: var(--accent); margin: 16px auto 22px; opacity: .8; }
+.closing-names { font: 400 clamp(43px, 11vw, 58px)/1.3 var(--signature); color: var(--accent); margin: 0 0 6px; }
+.closing-names i { font: 400 .6em/1 var(--serif); margin: 0 .3em; }
+.closing-date { font-size: 13px; letter-spacing: .18em; margin: 0; }
+.closing-note { font-size: 18px; line-height: 1.5; margin: 24px 0 22px; text-shadow: 0 0 12px var(--paper); }
+.closing-rsvp {
+  display: inline-flex; align-items: center; gap: 18px; min-height: 46px; padding: 10px 20px; border: 1px solid var(--accent); border-radius: 30px;
+  background: color-mix(in srgb, var(--paper) 80%, transparent); text-decoration: none; font-size: 15px; transition: background .25s, transform .25s;
+}
+.closing-rsvp:hover { background: var(--paper); transform: translateY(-2px); }
+.closing-caption { position: absolute; bottom: 26px; left: 25px; right: 25px; margin: 0; font-size: 14px; font-style: italic; }
+.closing-scene .couple { width: 104%; }
+.closing-colophon { padding: 20px 25px 110px; }
+.monogram { width: 58%; margin: 0 auto 26px; border-radius: 200px 200px 4px 4px; border: 1px solid var(--metal); outline: 1px solid color-mix(in srgb, var(--metal) 40%, transparent); outline-offset: 6px; }
+.reopen { border: 0; border-bottom: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); background: none; color: var(--ink); font-size: 15px; padding: 10px 0; min-height: 44px; }
+.reopen span { margin-left: 10px; }
+
+/* Floating controls and status */
+.media-controls { position: fixed; z-index: 20; bottom: max(18px, env(safe-area-inset-bottom)); right: max(18px, calc((100vw - 560px) / 2 + 18px)); display: flex; gap: 8px; }
+.media-button { border: 1px solid #fff7; border-radius: 30px; background: var(--accent); color: #fff; padding: 11px 16px; font-size: 14px; min-height: 44px; box-shadow: 0 3px 14px #0003; }
+.media-button:disabled { cursor: default; opacity: .85; }
+.status { position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%); max-width: 90%; border-radius: 5px; background: var(--ink); color: #fff; padding: 10px 18px; font-size: 15px; z-index: 110; }
+
+/* ---------- Motion ---------- */
+.reveal.arriving { animation: rise .85s ease both; }
+.motion-paused .blossom, .motion-paused .curtain, .motion-paused .sun, .motion-paused .lake::after, .motion-paused .timeline li.is-current .bloom { animation-play-state: paused; }
+.motion-paused .reveal.arriving { animation: none; }
+
+@keyframes rise { from { opacity: .2; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+/* A blossom nodding in a light breeze: a slight turn, lift and swell. */
+@keyframes stir {
+  0% { transform: rotate(-2.4deg) translate(0, 0) scale(1); }
+  45% { transform: rotate(1.2deg) translate(.6px, -1px) scale(1.018); }
+  100% { transform: rotate(2.8deg) translate(-.4px, .5px) scale(1.03); }
+}
+@keyframes curtain-sway { from { transform: skewX(0deg); } to { transform: skewX(2.2deg) translateX(4px); } }
+@keyframes breathe { 0%, 100% { scale: 1; } 50% { scale: 1.09; } }
+@keyframes sun-breathe { from { opacity: .85; scale: .96; } to { opacity: 1; scale: 1.05; } }
+@keyframes shimmer { from { opacity: .45; translate: -3px 0; } to { opacity: 1; translate: 3px 1px; } }
+
+@media (max-width: 380px) {
+  .paper { padding-left: 28px; padding-right: 28px; }
+  .names { font-size: 72px; }
+  .countdown strong { font-size: 30px; }
+  .timeline time { font-size: 20px; }
+  .closing-title { font-size: 50px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; }
+  [data-scene] { --p: 0 !important; }
+}
